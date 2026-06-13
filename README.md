@@ -1,21 +1,22 @@
-# mock-auth
+# stub-auth
 
-[![npm version](https://img.shields.io/npm/v/mock-auth.svg)](https://www.npmjs.com/package/mock-auth)
-[![npm downloads](https://img.shields.io/npm/dm/mock-auth.svg)](https://www.npmjs.com/package/mock-auth)
-[![CI status](https://github.com/intisy/mock-auth/actions/workflows/publish.yml/badge.svg)](https://github.com/intisy/mock-auth/actions/workflows/publish.yml)
+[![npm version](https://img.shields.io/npm/v/stub-auth.svg)](https://www.npmjs.com/package/stub-auth)
+[![npm downloads](https://img.shields.io/npm/dm/stub-auth.svg)](https://www.npmjs.com/package/stub-auth)
+[![CI status](https://github.com/intisy/stub-auth/actions/workflows/publish.yml/badge.svg)](https://github.com/intisy/stub-auth/actions/workflows/publish.yml)
 
-A mock AI-provider driver for [`core-auth`](https://github.com/intisy/core-auth). It returns
-canned, valid Anthropic Messages API responses (JSON or SSE) so the auth pipeline — discovery,
-routing, account selection, and the per-app adapters in Claude Code and OpenCode — can be
-validated end to end without contacting any real provider.
+A stub AI-provider driver for [`core-auth`](https://github.com/intisy/core-auth). It returns canned,
+valid Anthropic Messages API responses (JSON or SSE) so the auth pipeline — discovery, routing, and
+the per-app adapters in Claude Code and OpenCode — can be validated end to end without contacting any
+real provider. It is also the reference **example** for building new provider plugins: define
+`{ id, label, models, handle }`, let core-auth do the rest.
 
 ## Under-the-Hood Architecture
 
 ```mermaid
 flowchart LR
-  A[cc / oc chat] --> B[core-auth route]
+  A[cc / oc chat] --> B[core-auth / loader proxy]
   B --> C{active provider}
-  C -->|mock| D[mock-auth driver.handle]
+  C -->|stub| D[driver.handle]
   D -->|stream?| E[canned SSE]
   D -->|else| F[canned JSON]
   E --> A
@@ -24,44 +25,35 @@ flowchart LR
 
 ## Structure
 
-- `src/driver.ts` — the `ProviderDriver`: `handle()` returns the canned response, `authenticate()`
-  mints a dummy account, and no `parseQuota` (it never rate-limits).
-- `dist/driver.js` — compiled output (the `claudeHub.authProviders[].driver` entry point).
+- `src/driver.ts` — the provider: `id`/`label`/`models` + `handle()` returning the canned response.
+- `src/index.ts` — OpenCode entry (`defineProvider(driver).opencode`).
+- `src/handler.ts` — Claude entry (the named `handle` the loader proxy calls).
+- `dist/` — esbuild bundles core-auth in, producing self-contained `index.js` + `handler.js`.
 
 ## Installation
 
 ### Via plugin-updater (primary)
 
-`mock-auth` is a `core-auth` driver, discovered when it is present in `<configDir>/repos/`. Add it
-to either loader's plugin set:
-
 ```bash
-npx -y plugin-updater@latest add https://github.com/intisy/mock-auth
+npx -y plugin-updater@latest add https://github.com/intisy/stub-auth
 ```
 
-Then open the loader → Plugins → Provider tab (`cc auth` / `oc auth`) and select **Mock**.
+Then pick **Stub** in the loader's Providers tab (`cc auth`) / `oc auth login`.
 
 ### Via npm
 
 ```bash
-npm install mock-auth
+npm install stub-auth
 ```
 
 ## Configuration
 
-`mock-auth` has no settings of its own. The active provider is stored by `core-auth` in
-`<configDir>/config/core-auth.json`:
-
-```json
-{
-  "provider": "mock"
-}
-```
+`stub-auth` has no settings of its own. The active provider is stored by the loader; OpenCode selects
+it via `oc auth login` + a `stub/...` model.
 
 ## Logging
 
-`mock-auth` produces no logs of its own; request routing is logged by `core-auth` under
-`<configDir>/logs/YYYY-MM-DD/`.
+Request routing is logged by the loader/core-auth under `<configDir>/logs/YYYY-MM-DD/`.
 
 ## License
 

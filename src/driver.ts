@@ -2,16 +2,16 @@
 // The whole provider: a canned Anthropic-format response (JSON or SSE). core-auth
 // turns this into the OpenCode and Claude integrations.
 
-const MOCK_TEXT = "Hello from mock-auth — the core-auth pipeline works end to end.";
+const STUB_TEXT = "Hello from stub-auth — the core-auth pipeline works end to end.";
 
-function mockText(model) {
-  return MOCK_TEXT + " (served by " + model + ")";
+function stubText(model) {
+  return STUB_TEXT + " (served by " + model + ")";
 }
 
 function jsonBody(model) {
   return {
-    id: "msg_mock_0001", type: "message", role: "assistant", model,
-    content: [{ type: "text", text: mockText(model) }],
+    id: "msg_stub_0001", type: "message", role: "assistant", model,
+    content: [{ type: "text", text: stubText(model) }],
     stop_reason: "end_turn", stop_sequence: null,
     usage: { input_tokens: 1, output_tokens: 12 },
   };
@@ -22,11 +22,11 @@ function sse(event, data) {
 }
 
 function streamBody(model) {
-  const msg = { id: "msg_mock_0001", type: "message", role: "assistant", model, content: [], stop_reason: null, stop_sequence: null, usage: { input_tokens: 1, output_tokens: 0 } };
+  const msg = { id: "msg_stub_0001", type: "message", role: "assistant", model, content: [], stop_reason: null, stop_sequence: null, usage: { input_tokens: 1, output_tokens: 0 } };
   return (
     sse("message_start", { type: "message_start", message: msg }) +
     sse("content_block_start", { type: "content_block_start", index: 0, content_block: { type: "text", text: "" } }) +
-    sse("content_block_delta", { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: mockText(model) } }) +
+    sse("content_block_delta", { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: stubText(model) } }) +
     sse("content_block_stop", { type: "content_block_stop", index: 0 }) +
     sse("message_delta", { type: "message_delta", delta: { stop_reason: "end_turn", stop_sequence: null }, usage: { output_tokens: 12 } }) +
     sse("message_stop", { type: "message_stop" })
@@ -34,21 +34,20 @@ function streamBody(model) {
 }
 
 export const driver = {
-  id: "mock",
-  label: "Mock",
-  opencodeProvider: "mock",
+  id: "stub",
+  label: "Stub",
+  opencodeProvider: "stub",
   opencodeNpm: "@ai-sdk/anthropic",
   // a few models so the Claude model-mapping is demonstrable
   models: {
-    "mock-model": { name: "Mock Default" },
-    "mock-pro": { name: "Mock Pro" },
-    "mock-fast": { name: "Mock Fast" },
+    "stub-model": { name: "Stub Default" },
+    "stub-pro": { name: "Stub Pro" },
+    "stub-fast": { name: "Stub Fast" },
   },
   async handle(request, ctx) {
     let body = {};
     try { body = await request.clone().json(); } catch {}
-    // the Claude proxy resolves the mapped provider model into ctx.model
-    const model = (ctx && ctx.model) || body.model || "mock-model";
+    const model = (ctx && ctx.model) || body.model || "stub-model";
     if (body.stream) {
       return new Response(streamBody(model), { status: 200, headers: { "content-type": "text/event-stream" } });
     }

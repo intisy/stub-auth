@@ -5,4 +5,4 @@
 import { defineProvider } from "../core-auth/dist/index.js";
 import { driver } from "./driver.js";
 
-export const MockProvider = defineProvider(driver).opencode;
+export const StubProvider = defineProvider(driver).opencode;

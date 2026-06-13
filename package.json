@@ -1,16 +1,16 @@
 {
-  "name": "mock-auth",
+  "name": "stub-auth",
   "version": "0.1.0",
-  "description": "Mock AI provider driver for core-auth — canned responses to validate the auth pipeline.",
+  "description": "Stub AI provider driver for core-auth — canned responses to validate the auth pipeline; the reference example for building provider plugins.",
   "main": "dist/index.js",
   "type": "module",
   "license": "MIT",
   "author": "intisy",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/intisy/mock-auth.git"
+    "url": "git+https://github.com/intisy/stub-auth.git"
   },
-  "keywords": ["core-auth", "provider", "mock", "auth", "test"],
+  "keywords": ["core-auth", "provider", "stub", "auth", "example"],
   "files": ["dist/", "README.md", "LICENSE"],
   "engines": {
     "node": ">=20.0.0"
@@ -18,12 +18,12 @@
   "claudeHub": {
     "authProviders": [
       {
-        "name": "mock",
+        "name": "stub",
         "handler": "dist/handler.js",
         "models": [
-          { "id": "mock-model", "name": "Mock Default" },
-          { "id": "mock-pro", "name": "Mock Pro" },
-          { "id": "mock-fast", "name": "Mock Fast" }
+          { "id": "stub-model", "name": "Stub Default" },
+          { "id": "stub-pro", "name": "Stub Pro" },
+          { "id": "stub-fast", "name": "Stub Fast" }
         ]
       }
     ]
