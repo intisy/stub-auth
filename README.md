@@ -2,9 +2,9 @@
 
 [![npm version](https://img.shields.io/npm/v/stub-auth.svg)](https://www.npmjs.com/package/stub-auth)
 [![npm downloads](https://img.shields.io/npm/dm/stub-auth.svg)](https://www.npmjs.com/package/stub-auth)
-[![CI status](https://github.com/intisy/stub-auth/actions/workflows/publish.yml/badge.svg)](https://github.com/intisy/stub-auth/actions/workflows/publish.yml)
+[![CI status](https://github.com/intisy-ai/stub-auth/actions/workflows/publish.yml/badge.svg)](https://github.com/intisy-ai/stub-auth/actions/workflows/publish.yml)
 
-A stub AI-provider driver for [`core-auth`](https://github.com/intisy/core-auth). It returns canned,
+A stub AI-provider driver for [`core-auth`](https://github.com/intisy-ai/core-auth). It returns canned,
 valid Anthropic Messages API responses (JSON or SSE) so the auth pipeline — discovery, routing, and
 the per-app adapters in Claude Code and OpenCode — can be validated end to end without contacting any
 real provider. It is also the reference **example** for building new provider plugins: define
@@ -35,7 +35,7 @@ flowchart LR
 ### Via plugin-updater (primary)
 
 ```bash
-npx -y plugin-updater@latest add https://github.com/intisy/stub-auth
+npx -y plugin-updater@latest add https://github.com/intisy-ai/stub-auth
 ```
 
 Then pick **Stub** in the loader's Providers tab (`cc auth`) / `oc auth login`.
