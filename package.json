@@ -49,6 +49,7 @@
   },
   "scripts": {
     "build": "npx tsc --project core-auth/tsconfig.json && npx esbuild src/index.ts --bundle --platform=node --format=esm --external:sync-bridge --outfile=dist/index.js && npx esbuild src/handler.ts --bundle --platform=node --format=esm --external:sync-bridge --outfile=dist/handler.js",
+    "postbuild": "node dist/index.js readme",
     "test": "npm run build && vitest run",
     "prepublishOnly": "npm run build"
   },

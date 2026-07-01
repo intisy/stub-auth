@@ -9,4 +9,5 @@ runPluginContract({
   commands: ["stub-auth-config", "stub-accounts"],
   deploy: "load",
   actions: [["accounts"]],
+  readme: true,
 });
