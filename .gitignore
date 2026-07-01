@@ -4,3 +4,4 @@ dist/
 /.idea
 .idea/
 package-lock.json
+.superpowers/
